@@ -2,12 +2,13 @@ package com.app.repository;
 
 import com.app.entity.ResumeSection;
 import com.app.enums.SectionType;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface SectionRepository extends MongoRepository<ResumeSection, String> {
+public interface SectionRepository extends JpaRepository<ResumeSection, String> {
 
     List<ResumeSection> findByResumeId(Integer resumeId);
 
@@ -19,5 +20,6 @@ public interface SectionRepository extends MongoRepository<ResumeSection, String
 
     long countByResumeId(Integer resumeId);
 
+    @Transactional
     void deleteByResumeId(Integer resumeId);
 }
