@@ -1,0 +1,81 @@
+# Gitignore for ResumeAI multi-module Java/Maven microservices repo
+# Generated to ignore build artifacts, IDE files, OS files, and local secrets
+
+### Maven / Java ###
+**/target/
+**/build/
+**/out/
+*.class
+*.jar
+*.war
+*.ear
+generated-sources/
+*.log
+
+### Spring / configuration ###
+# Ignore generic env files
+.env
+.env.*
+
+### IDEs ###
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# VS Code
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+### OS files ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### Logs / Reports / Coverage ###
+logs/
+*.log
+target/surefire-reports/
+target/failsafe-reports/
+jacoco.exec
+coverage/
+
+### Test / Build artifacts ###
+surefire-reports/
+failsafe-reports/
+test-logs/
+*.tmp
+
+### Security / Keys / Secrets ###
+*.jks
+*.keystore
+*.p12
+secrets.properties
+key.pem
+id_rsa
+
+### Containers / Docker ###
+.dockerignore
+docker-compose.override.yml
+
+### Node (in case frontend tools are added) ###
+node_modules/
+dist/
+
+### Misc ###
+*.swp
+*~
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/dictionaries
+
+# Local maven repository (do NOT commit vendor libs)
+.mvn/repository/
+
+# Ignore IDE-specific run configs
+*.run.xml
+GIT_GUIDE.md
