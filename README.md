@@ -1,120 +1,68 @@
-# 🚀 ResumeAI – Microservices-Based AI Resume Builder
+# ResumeAI Backend - Microservices Project
 
-ResumeAI is a **microservices-based AI-powered resume builder platform** that helps users create, optimize, and export professional resumes using AI.
+Welcome to the **ResumeAI** backend repository. This project is built using a microservices architecture with Spring Boot, Spring Cloud, and React.
 
-This repository contains all backend services organized using **Spring Boot + Spring Cloud architecture**.
+## 🏗 Project Architecture
 
----
-
-## 📌 Project Overview
-
-ResumeAI allows users to:
-
-- Create and manage resumes
-- Generate AI-based content (summary, experience, etc.)
-- Check ATS (Applicant Tracking System) score
-- Use different resume templates
-- Export resumes (PDF/DOCX/JSON)
-- Authenticate securely using JWT
+| Service | Port | Description |
+|---------|------|-------------|
+| `SERVICE-REGISTRY` | 8761 | Eureka Service Discovery |
+| `RESUMEAI-GATEWAY` | 8080 | Spring Cloud Gateway (Entry point) |
+| `AUTH-SERVICE` | 8081 | Authentication & User Management |
+| `RESUME-SERVICE` | 8082 | Resume CRUD Operations |
+| `TEMPLATE-SERVICE` | 8083 | Resume Template Management |
+| `RESUME-SECTION-SERVICE` | 8084 | Dynamic Section Management |
+| `AICONTENT-SERVICE` | 8085 | AI Generation (OpenAI/Claude/Gemini) |
+| `NOTIFICATION-SERVICE` | 8086 | Email & Dashboard Notifications |
 
 ---
 
-## 🧩 Microservices Included
+## 🌿 Git Workflow & Branching Strategy
 
-This repo (dev branch) contains:
+We follow a professional branching strategy to ensure code quality and safety.
 
-- **AUTH-SERVICE** → User authentication & JWT  
-- **RESUME-SERVICE** → Resume CRUD operations  
-- **RESUME-SECTION-SERVICE** → Manage resume sections  
-- **TEMPLATE-SERVICE** → Resume templates (HTML/CSS)  
-- **AICONTENT-SERVICE** → AI content generation  
-- **RESUMEAI-GATEWAY** → API Gateway (routing)  
-- **SERVICE-REGISTRY** → Eureka Server  
+### 1. Branches
+- **`main`**: The stable, production-ready branch. Only merge from `dev` after full testing.
+- **`dev`**: The integration branch. All service features are merged here for testing.
+- **`feature/<service-name>`**: Dedicated branches for working on specific services (e.g., `feature/auth-service`).
 
----
-
-## 🏗️ Architecture
-
-```
-Client → API Gateway → Microservices → Database
-                     ↓
-               Service Registry (Eureka)
-```
-
-- API Gateway handles routing
-- Eureka manages service discovery
-- Each service is independent and scalable
+### 2. Workflow Steps
+1.  **Switch to your service branch**: `git checkout feature/auth-service`
+2.  **Make changes and test locally**.
+3.  **Commit and Push**:
+    ```bash
+    git add .
+    git commit -m "feat(auth): added jwt validation"
+    git push origin feature/auth-service
+    ```
+4.  **Merge to `dev`**: Once stable, merge your branch into `dev` for integration testing.
+5.  **Merge to `main`**: After all services are verified in `dev`, merge `dev` into `main`.
 
 ---
 
-## ⚙️ Tech Stack
+## 🔐 Security & Environment Configuration
 
-- **Backend:** Spring Boot, Spring Cloud  
-- **Security:** Spring Security + JWT  
-- **Database:** MySQL / MongoDB  
-- **Service Discovery:** Eureka  
-- **API Gateway:** Spring Cloud Gateway  
-- **Build Tool:** Maven  
+**IMPORTANT**: Sensitive data (DB passwords, API keys) must **NEVER** be pushed to Git.
 
----
+We use a "Local Template" pattern:
+- **`application.properties` / `.yml`**: These files contain your **REAL** local data. They are added to `.gitignore` and stay ONLY on your computer.
+- **`application-local.properties` / `.yml`**: These are **TEMPLATE** files with placeholders like `${}`. These are pushed to Git as a reference for others.
 
-## 🚀 How to Run
-
-### 1️⃣ Clone the repo
-```bash
-git clone https://github.com/Vishwajeet-singh68/ResumeAI.git
-cd ResumeAI
-git checkout dev
-```
-
-### 2️⃣ Start services in order
-
-1. SERVICE-REGISTRY  
-2. API-GATEWAY  
-3. AUTH-SERVICE  
-4. Other services  
+### Setup for new developers:
+1. Copy the `application-local` files to `application` files.
+2. Fill in your real database credentials and API keys in the `application` files.
 
 ---
 
-## 🔐 Authentication
+## 🚀 Getting Started
 
-Uses **JWT Token-based authentication**
+### Prerequisites
+- Java 17+
+- Maven
+- MySQL
+- RabbitMQ (for Notification Service)
 
-Add token in request header:
-
-```http
-Authorization: Bearer <your_token>
-```
-
----
-
-## 📂 Project Structure
-
-```
-ResumeAI/
-│── auth-service/
-│── resume-service/
-│── resume-section-service/
-│── template-service/
-│── ai-content-service/
-│── api-gateway/
-│── service-registry/
-```
-
----
-
-## ✨ Features
-
-- Microservices architecture  
-- AI-based resume generation(Service created, integration pending)  
-- ATS score checking  
-- Template-based resume design  
-- Secure authentication  
-
----
-
-## 📌 Future Enhancements
-
-- Job matching system  
-- Notification service  
-- Frontend integration (React) (some part completed)
+### Running the Project
+1. Start the **SERVICE-REGISTRY** first.
+2. Start the **RESUMEAI-GATEWAY**.
+3. Start the individual microservices.
