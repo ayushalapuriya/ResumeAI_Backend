@@ -26,6 +26,9 @@ out/
 # VS Code
 .vscode/
 
+# GitHub workflows (local-only): untrack if you don't want workflows pushed
+.github/
+
 # Eclipse
 .project
 .classpath
