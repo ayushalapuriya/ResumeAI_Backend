@@ -71,8 +71,8 @@ public class AiServiceImpl implements AiService {
 
     // 🔒 QUOTA CHECK
     private void validateQuota(int userId) {
-        if (repo.countByUserIdToday(userId) > 50) {
-            throw new RuntimeException("Daily limit exceeded");
+        if (repo.countByUserIdToday(userId) >= 5) {
+            throw new org.app.aicontentservice.exception.QuotaExceededException("Daily AI limit of 5 requests exceeded. Upgrade to Premium for unlimited access!");
         }
     }
 
@@ -219,6 +219,6 @@ public class AiServiceImpl implements AiService {
     // 📊 QUOTA
     @Override
     public int getRemainingQuota(int userId) {
-        return 50 - repo.countByUserIdToday(userId);
+        return 5 - repo.countByUserIdToday(userId);
     }
 }

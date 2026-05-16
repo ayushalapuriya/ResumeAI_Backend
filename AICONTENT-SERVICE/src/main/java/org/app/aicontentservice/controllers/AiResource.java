@@ -15,12 +15,20 @@ public class AiResource {
     private final AiService aiService;
 
     @PostMapping("/summary")
-    public ResponseEntity<?> summary(@RequestBody Map<String, String> req) {
+    public ResponseEntity<?> summary(@RequestBody Map<String, Object> req) {
+        int userId = 0;
+        Object userIdObj = req.get("userId");
+        if (userIdObj instanceof Number) {
+            userId = ((Number) userIdObj).intValue();
+        } else if (userIdObj instanceof String) {
+            userId = Integer.parseInt((String) userIdObj);
+        }
+
         return ResponseEntity.ok(
-                aiService.generateSummary(
-                        Integer.parseInt(req.get("userId")),
-                        req.get("resume"),
-                        req.get("jobDesc"))
+                Map.of("summary", aiService.generateSummary(
+                        userId,
+                        (String) req.get("resume"),
+                        (String) req.get("jobDesc")))
         );
     }
 
@@ -31,6 +39,6 @@ public class AiResource {
 
     @GetMapping("/quota/{userId}")
     public ResponseEntity<?> quota(@PathVariable int userId) {
-        return ResponseEntity.ok(aiService.getRemainingQuota(userId));
+        return ResponseEntity.ok(Map.of("remaining", aiService.getRemainingQuota(userId)));
     }
 }
