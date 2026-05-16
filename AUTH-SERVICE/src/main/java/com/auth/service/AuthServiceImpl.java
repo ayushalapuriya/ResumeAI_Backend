@@ -13,6 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.WeekFields;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -203,6 +209,41 @@ public class AuthServiceImpl implements AuthService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete user. They might have existing resumes or related data. Error: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> getUserGrowthData(String groupBy) {
+        List<User> users = repo.findAll();
+        
+        // Group users by the formatted date string
+        Map<String, Long> counts = users.stream()
+            .filter(u -> u.getCreatedAt() != null)
+            .collect(Collectors.groupingBy(u -> {
+                LocalDate date = u.getCreatedAt().toLocalDate();
+                if ("week".equalsIgnoreCase(groupBy)) {
+                    WeekFields weekFields = WeekFields.of(Locale.getDefault());
+                    int week = date.get(weekFields.weekOfWeekBasedYear());
+                    return date.getYear() + "-W" + String.format("%02d", week);
+                } else if ("month".equalsIgnoreCase(groupBy)) {
+                    return date.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+                } else {
+                    return date.toString(); // Default to "day" (yyyy-MM-dd)
+                }
+            }, TreeMap::new, Collectors.counting()));
+
+        List<Map<String, Object>> growthData = new ArrayList<>();
+        long cumulativeUsers = 0;
+
+        for (Map.Entry<String, Long> entry : counts.entrySet()) {
+            cumulativeUsers += entry.getValue();
+            Map<String, Object> dataPoint = new HashMap<>();
+            dataPoint.put("date", entry.getKey());
+            dataPoint.put("newUsers", entry.getValue());
+            dataPoint.put("users", cumulativeUsers); // Cumulative total
+            growthData.add(dataPoint);
+        }
+
+        return growthData;
     }
 }
 

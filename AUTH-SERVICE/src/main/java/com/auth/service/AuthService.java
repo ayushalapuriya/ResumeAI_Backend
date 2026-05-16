@@ -46,4 +46,7 @@ public interface AuthService {
 
     // 👨‍💼 Admin: Delete user
     void deleteUser(Integer id);
+
+    // 📈 Admin: Analytics
+    java.util.List<java.util.Map<String, Object>> getUserGrowthData(String groupBy);
 }

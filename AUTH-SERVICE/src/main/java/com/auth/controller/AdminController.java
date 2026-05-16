@@ -86,7 +86,22 @@ public class AdminController {
             stats.put("totalResumes", 0);
         }
         
-        stats.put("newUsersToday", 2); // Still mocked
+        // Real stats for today
+        java.time.LocalDateTime startOfToday = java.time.LocalDateTime.now().with(java.time.LocalTime.MIN);
+        long newUsersToday = users.stream()
+                .filter(u -> u.getCreatedAt() != null && u.getCreatedAt().isAfter(startOfToday))
+                .count();
+        stats.put("newUsersToday", newUsersToday);
+
+        // Calculate growth percentage (new users in last 30 days vs total)
+        java.time.LocalDateTime thirtyDaysAgo = java.time.LocalDateTime.now().minusDays(30);
+        long newUsersLast30Days = users.stream()
+                .filter(u -> u.getCreatedAt() != null && u.getCreatedAt().isAfter(thirtyDaysAgo))
+                .count();
+        
+        double growthPercentage = users.size() > 0 ? ((double) newUsersLast30Days / users.size()) * 100 : 0;
+        stats.put("growthPercentage", String.format("%.1f", growthPercentage));
+
         return ResponseEntity.ok(stats);
     }
 
@@ -100,14 +115,10 @@ public class AdminController {
         ));
     }
 
-    // 📈 Analytics (Mocked)
+    // 📈 Analytics (Real)
     @GetMapping("/analytics/user-growth")
-    public ResponseEntity<List<Map<String, Object>>> getUserGrowth() {
-        return ResponseEntity.ok(List.of(
-            Map.of("date", "2024-05-10", "users", 10),
-            Map.of("date", "2024-05-11", "users", 15),
-            Map.of("date", "2024-05-12", "users", 25)
-        ));
+    public ResponseEntity<List<Map<String, Object>>> getUserGrowth(@RequestParam(defaultValue = "day") String groupBy) {
+        return ResponseEntity.ok(authService.getUserGrowthData(groupBy));
     }
 
     @GetMapping("/analytics/platform")
