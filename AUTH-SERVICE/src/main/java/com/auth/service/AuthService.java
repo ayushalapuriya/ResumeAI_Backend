@@ -31,4 +31,19 @@ public interface AuthService {
 
     // 💳 Update subscription plan
     void updateSubscription(Integer id, String plan);
+
+    // 👨‍💼 Admin: Get all users
+    java.util.List<User> getAllUsers();
+
+    // 👨‍💼 Admin: Get all emails
+    java.util.List<String> getAllEmails();
+
+    // 👨‍💼 Admin: Update user status
+    void updateUserStatus(Integer id, boolean active);
+
+    // 👨‍💼 Admin: Update user role
+    void updateUserRole(Integer id, String role);
+
+    // 👨‍💼 Admin: Delete user
+    void deleteUser(Integer id);
 }

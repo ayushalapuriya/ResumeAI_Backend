@@ -1,6 +1,6 @@
-package com.app.aicontentservice.repository;
+package org.app.aicontentservice.repository;
 
-import com.app.aicontentservice.entity.AiRequest;
+import org.app.aicontentservice.entity.AiRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

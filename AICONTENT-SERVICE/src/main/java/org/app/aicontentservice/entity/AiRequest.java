@@ -1,4 +1,4 @@
-package com.app.aicontentservice.entity;
+package org.app.aicontentservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

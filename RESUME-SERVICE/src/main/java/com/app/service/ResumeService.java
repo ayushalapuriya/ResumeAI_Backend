@@ -29,4 +29,6 @@ public interface ResumeService {
     void incrementViewCount(int id);
 
     List<ResumeDTO> getResumesByTemplate(int templateId);
+
+    long countResumes();
 }

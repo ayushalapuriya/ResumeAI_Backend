@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/templates")
+@RequestMapping("/templates")
 @RequiredArgsConstructor
 public class TemplateController {
 
@@ -53,9 +52,9 @@ public class TemplateController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deactivate(@PathVariable Long id) {
-        templateService.deactivateTemplate(id);
-        return ResponseEntity.ok("Template deactivated");
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        templateService.deleteTemplate(id);
+        return ResponseEntity.ok("Template deleted permanently");
     }
 
     @PutMapping("/{id}/usage")
@@ -67,5 +66,16 @@ public class TemplateController {
     @GetMapping("/popular")
     public ResponseEntity<List<ResumeTemplate>> getPopular() {
         return ResponseEntity.ok(templateService.getPopularTemplates());
+    }
+
+    @PutMapping("/{id}/toggle-status")
+    public ResponseEntity<String> toggleStatus(@PathVariable Long id) {
+        templateService.toggleTemplateStatus(id);
+        return ResponseEntity.ok("Template status toggled");
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getCount() {
+        return ResponseEntity.ok(templateService.countTemplates());
     }
 }

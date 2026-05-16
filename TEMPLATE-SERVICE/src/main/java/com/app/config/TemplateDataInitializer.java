@@ -16,7 +16,7 @@ public class TemplateDataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (repository.count() <= 2) {
+        if (repository.count() == 0) {
             // Demo 1: Modern Professional (Enhanced)
             repository.save(ResumeTemplate.builder()
                     .name("Modern Professional")

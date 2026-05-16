@@ -1,4 +1,4 @@
-package com.app.aicontentservice.client;
+package org.app.aicontentservice.client;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

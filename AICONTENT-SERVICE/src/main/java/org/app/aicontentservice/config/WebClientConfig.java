@@ -1,4 +1,4 @@
-package com.app.aicontentservice.config;
+package org.app.aicontentservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

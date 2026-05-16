@@ -126,4 +126,9 @@ public class ResumeServiceImpl implements ResumeService {
                 .map(mapper::toDTO)
                 .toList();
     }
+
+    @Override
+    public long countResumes() {
+        return repository.count();
+    }
 }

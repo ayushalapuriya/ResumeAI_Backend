@@ -1,4 +1,4 @@
-package com.app.serviceregistry;
+package org.app.serviceregistry;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

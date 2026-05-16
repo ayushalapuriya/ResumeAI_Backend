@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/resumes")
+@RequestMapping("/resumes")
 @RequiredArgsConstructor
 public class ResumeController {
 
@@ -85,5 +85,10 @@ public class ResumeController {
     @GetMapping("/template/{templateId}")
     public ResponseEntity<List<ResumeDTO>> getByTemplate(@PathVariable int templateId) {
         return ResponseEntity.ok(service.getResumesByTemplate(templateId));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getCount() {
+        return ResponseEntity.ok(service.countResumes());
     }
 }

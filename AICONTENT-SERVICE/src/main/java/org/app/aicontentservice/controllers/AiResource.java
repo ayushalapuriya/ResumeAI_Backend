@@ -1,7 +1,7 @@
-package com.app.aicontentservice.controllers;
+package org.app.aicontentservice.controllers;
 
 import lombok.RequiredArgsConstructor;
-import com.app.aicontentservice.service.AiService;
+import org.app.aicontentservice.service.AiService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

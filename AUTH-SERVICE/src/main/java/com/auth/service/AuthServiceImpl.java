@@ -5,7 +5,6 @@ import com.auth.entity.User;
 import com.auth.repository.UserRepository;
 import com.auth.security.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,13 +30,23 @@ public class AuthServiceImpl implements AuthService {
                 .email(request.getEmail())
                 .password(encoder.encode(request.getPassword()))
                 .role("ROLE_USER")
+                .isActive(true)
+                .subscriptionPlan("FREE")
                 .build();
 
         repo.save(user);
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token);
+        return new AuthResponse(
+                token,
+                user.getUserId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getSubscriptionPlan()
+        );
+
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -48,11 +57,21 @@ public class AuthServiceImpl implements AuthService {
                         request.getPassword()
                 )
         );
-        User user = (User) authentication.getPrincipal();
+        
+        User user = repo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token);
+        return new AuthResponse(
+                token,
+                user.getUserId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getSubscriptionPlan()
+        );
+
     }
     @Override
     public boolean validateToken(String token) {
@@ -118,6 +137,7 @@ public class AuthServiceImpl implements AuthService {
         existingUser.setFullName(updateProfile.getFullName());
         existingUser.setEmail(updateProfile.getEmail());
         existingUser.setPhone(updateProfile.getPhone());
+        existingUser.setProfilePhoto(updateProfile.getProfilePhoto());
         repo.save(existingUser);
         return updateProfile;
     }
@@ -144,4 +164,45 @@ public class AuthServiceImpl implements AuthService {
 
         repo.save(user);
     }
+
+    @Override
+    public java.util.List<User> getAllUsers() {
+        return repo.findAll();
+    }
+
+    @Override
+    public java.util.List<String> getAllEmails() {
+        return repo.findAll().stream()
+                .map(User::getEmail)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public void updateUserStatus(Integer id, boolean active) {
+        User user = repo.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(active);
+        repo.save(user);
+    }
+
+    @Override
+    public void updateUserRole(Integer id, String role) {
+        User user = repo.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setRole(role);
+        repo.save(user);
+    }
+
+    @Override
+    public void deleteUser(Integer id) {
+        User user = repo.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found"));
+        
+        try {
+            repo.delete(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete user. They might have existing resumes or related data. Error: " + e.getMessage());
+        }
+    }
 }
+

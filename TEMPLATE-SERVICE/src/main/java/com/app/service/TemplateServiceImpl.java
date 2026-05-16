@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@org.springframework.transaction.annotation.Transactional
 public class TemplateServiceImpl implements TemplateService {
 
     private final TemplateRepository repository;
@@ -73,6 +74,11 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
+    public void deleteTemplate(Long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
     public void incrementUsage(Long id) {
         ResumeTemplate template = repository.findByTemplateId(id)
                 .orElseThrow(() -> new RuntimeException("Template not found"));
@@ -83,5 +89,19 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public List<ResumeTemplate> getPopularTemplates() {
         return repository.findAllByOrderByUsageCountDesc();
+    }
+
+    @Override
+    public void toggleTemplateStatus(Long id) {
+        ResumeTemplate template = repository.findByTemplateId(id)
+                .orElseThrow(() -> new RuntimeException("Template not found"));
+        boolean currentStatus = template.getIsActive() != null && template.getIsActive();
+        template.setIsActive(!currentStatus);
+        repository.save(template);
+    }
+
+    @Override
+    public long countTemplates() {
+        return repository.count();
     }
 }

@@ -45,6 +45,9 @@ public class User implements UserDetails {
     @Column(name = "subscription_plan")
     private String subscriptionPlan;
 
+    @Column(name = "profile_photo", columnDefinition = "LONGTEXT")
+    private String profilePhoto;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

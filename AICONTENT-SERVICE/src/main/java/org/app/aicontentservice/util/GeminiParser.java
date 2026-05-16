@@ -1,4 +1,4 @@
-package com.app.aicontentservice.util;
+package org.app.aicontentservice.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

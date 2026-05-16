@@ -1,4 +1,4 @@
-package com.app.service;
+package com.app.service.impl;
 
 import com.app.entity.ResumeSection;
 import com.app.enums.SectionType;

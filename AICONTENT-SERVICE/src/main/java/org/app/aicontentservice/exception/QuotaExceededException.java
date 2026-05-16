@@ -1,4 +1,4 @@
-package com.app.aicontentservice.exception;
+package org.app.aicontentservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

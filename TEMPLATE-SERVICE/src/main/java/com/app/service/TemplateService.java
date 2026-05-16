@@ -22,8 +22,14 @@ public interface TemplateService {
     ResumeTemplate updateTemplate(Long id, ResumeTemplate template);
 
     void deactivateTemplate(Long id);
+    
+    void deleteTemplate(Long id);
 
     void incrementUsage(Long id);
 
     List<ResumeTemplate> getPopularTemplates();
+
+    void toggleTemplateStatus(Long id);
+
+    long countTemplates();
 }

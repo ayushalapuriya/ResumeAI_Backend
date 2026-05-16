@@ -2,6 +2,76 @@ spring:
   cloud:
     gateway:
       routes:
+        # AUTH SERVICE
         - id: auth-service
-          uri: http://localhost:8080
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
 
+        # USER SERVICE
+        - id: user-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/user/**
+          filters:
+            - AuthFilter
+
+        # TEMPLATE SERVICE
+        - id: template-service
+          uri: lb://TEMPLATE-SERVICE
+          predicates:
+            - Path=/templates/**
+
+        # RESUME SERVICE
+        - id: resume-service
+          uri: lb://RESUME-SERVICE
+          predicates:
+            - Path=/resumes/**
+          filters:
+            - AuthFilter
+
+        # SECTION SERVICE
+        - id: section-service
+          uri: lb://RESUME-SECTION-SERVICE
+          predicates:
+            - Path=/sections/**
+          filters:
+            - AuthFilter
+
+        # AICONTENT SERVICE
+        - id: ai-service
+          uri: lb://AICONTENT-SERVICE
+          predicates:
+            - Path=/ai/**
+          filters:
+            - AuthFilter
+
+        # NOTIFICATION SERVICE
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notifications/**
+
+        # ADMIN USER ROUTES (to Auth Service)
+        - id: admin-user-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/admin/users/**, /admin/stats/**, /admin/audit-logs/**, /admin/analytics/**
+          filters:
+            - AuthFilter
+
+        # ADMIN TEMPLATE ROUTES (to Template Service)
+        - id: admin-template-service
+          uri: lb://TEMPLATE-SERVICE
+          predicates:
+            - Path=/admin/templates/**
+          filters:
+            - name: RewritePath
+              args:
+                regexp: '/admin/templates(?<segment>/?.*)'
+                replacement: '/templates${segment}'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

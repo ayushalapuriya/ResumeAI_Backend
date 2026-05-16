@@ -1,4 +1,4 @@
-package com.app.aicontentservice.service;
+package org.app.aicontentservice.service;
 
 import java.util.List;
 import java.util.Map;

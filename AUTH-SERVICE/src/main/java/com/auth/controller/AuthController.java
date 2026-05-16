@@ -48,7 +48,7 @@ public class AuthController {
     }
 
     // ✏️ Update profile
-    @PutMapping("/{id}")
+    @PutMapping({"/profile/{id}", "/{id}"})
     public UpdateProfileRequest updateProfile(
             @PathVariable Integer id,
             @RequestBody UpdateProfileRequest request) {

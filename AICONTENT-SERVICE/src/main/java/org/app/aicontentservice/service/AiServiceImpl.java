@@ -1,10 +1,10 @@
-package com.app.aicontentservice.service;
+package org.app.aicontentservice.service;
 
 import lombok.RequiredArgsConstructor;
-import com.app.aicontentservice.client.GeminiClient;
-import com.app.aicontentservice.entity.AiRequest;
-import com.app.aicontentservice.repository.AiRequestRepository;
-import com.app.aicontentservice.util.GeminiParser;
+import org.app.aicontentservice.client.GeminiClient;
+import org.app.aicontentservice.entity.AiRequest;
+import org.app.aicontentservice.repository.AiRequestRepository;
+import org.app.aicontentservice.util.GeminiParser;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
