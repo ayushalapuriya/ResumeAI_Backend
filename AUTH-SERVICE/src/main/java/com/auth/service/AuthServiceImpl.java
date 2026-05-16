@@ -144,6 +144,8 @@ public class AuthServiceImpl implements AuthService {
         existingUser.setEmail(updateProfile.getEmail());
         existingUser.setPhone(updateProfile.getPhone());
         existingUser.setProfilePhoto(updateProfile.getProfilePhoto());
+        existingUser.setJobTitle(updateProfile.getJobTitle());
+        existingUser.setLocation(updateProfile.getLocation());
         repo.save(existingUser);
         return updateProfile;
     }

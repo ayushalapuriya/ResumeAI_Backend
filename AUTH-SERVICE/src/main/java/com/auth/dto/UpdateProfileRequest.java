@@ -8,4 +8,6 @@ public class UpdateProfileRequest {
     private String email;
     private String phone;
     private String profilePhoto;
+    private String jobTitle;
+    private String location;
 }

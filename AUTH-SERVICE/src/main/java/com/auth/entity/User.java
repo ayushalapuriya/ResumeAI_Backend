@@ -48,6 +48,12 @@ public class User implements UserDetails {
     @Column(name = "profile_photo", columnDefinition = "LONGTEXT")
     private String profilePhoto;
 
+    @Column(name = "job_title")
+    private String jobTitle;
+
+    @Column(name = "location")
+    private String location;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
