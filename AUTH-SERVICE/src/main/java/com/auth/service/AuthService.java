@@ -47,6 +47,9 @@ public interface AuthService {
     // 👨‍💼 Admin: Delete user
     void deleteUser(Integer id);
 
+    // 👨‍💼 Admin: Create User
+    User createUser(java.util.Map<String, String> userData);
+
     // 📈 Admin: Analytics
     java.util.List<java.util.Map<String, Object>> getUserGrowthData(String groupBy);
 }

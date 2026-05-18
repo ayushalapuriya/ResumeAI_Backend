@@ -25,6 +25,12 @@ public class AdminController {
         return ResponseEntity.ok(authService.getAllUsers());
     }
 
+    // ➕ Create User
+    @PostMapping("/users")
+    public ResponseEntity<User> createUser(@RequestBody Map<String, String> body) {
+        return ResponseEntity.ok(authService.createUser(body));
+    }
+
     // 📧 Get all emails (for broadcast)
     @GetMapping("/users/emails")
     public ResponseEntity<List<String>> getAllEmails() {

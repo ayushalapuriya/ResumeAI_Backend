@@ -1,0 +1,195 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # DATABASE & BROKER INFRASTRUCTURE
+  # ==========================================
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=Root@123
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - resume-net
+    restart: always
+
+  rabbitmq-broker:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq-broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - resume-net
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: redis-cache
+    networks:
+      - resume-net
+    restart: always
+
+  # ==========================================
+  # SERVICE DISCOVERY & GATEWAY
+  # ==========================================
+  eureka-server:
+    build:
+      context: ./SERVICE-REGISTRY
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - resume-net
+    restart: always
+
+  gateway-service:
+    build:
+      context: ./RESUMEAI-GATEWAY
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_HOST=eureka-server
+      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:80,http://localhost:5173
+    depends_on:
+      - eureka-server
+    networks:
+      - resume-net
+    restart: on-failure
+
+  # ==========================================
+  # BACKEND MICROSERVICES
+  # ==========================================
+  auth-service:
+    build:
+      context: ./AUTH-SERVICE
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_HOST=mysql-db
+      - EUREKA_HOST=eureka-server
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - resume-net
+    restart: on-failure
+
+  resume-service:
+    build:
+      context: ./RESUME-SERVICE
+    container_name: resume-service
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_HOST=mysql-db
+      - EUREKA_HOST=eureka-server
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - resume-net
+    restart: on-failure
+
+  template-service:
+    build:
+      context: ./TEMPLATE-SERVICE
+    container_name: template-service
+    ports:
+      - "8083:8083"
+    environment:
+      - DB_HOST=mysql-db
+      - EUREKA_HOST=eureka-server
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - redis
+    networks:
+      - resume-net
+    restart: on-failure
+
+  resume-section-service:
+    build:
+      context: ./RESUME-SECTION-SERVICE
+    container_name: resume-section-service
+    ports:
+      - "8084:8084"
+    environment:
+      - DB_HOST=mysql-db
+      - EUREKA_HOST=eureka-server
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - resume-net
+    restart: on-failure
+
+  aicontent-service:
+    build:
+      context: ./AICONTENT-SERVICE
+    container_name: aicontent-service
+    ports:
+      - "8085:8085"
+    environment:
+      - DB_HOST=mysql-db
+      - EUREKA_HOST=eureka-server
+      - GEMINI_API_KEY=AIzaSyAGvUbBfypereryC5IH6YRKQ9YsCU0Jvsk
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - resume-net
+    restart: on-failure
+
+  notification-service:
+    build:
+      context: ./NOTIFICATION-SERVICE
+    container_name: notification-service
+    ports:
+      - "8086:8086"
+    environment:
+      - DB_HOST=mysql-db
+      - EUREKA_HOST=eureka-server
+      - RABBITMQ_HOST=rabbitmq-broker
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - rabbitmq-broker
+    networks:
+      - resume-net
+    restart: on-failure
+
+  # ==========================================
+  # FRONTEND CLIENT
+  # ==========================================
+  frontend:
+    build:
+      context: ../ResumeAI-Frontend
+      args:
+        - VITE_API_BASE_URL=http://localhost:8080
+    container_name: resumeai-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - gateway-service
+    networks:
+      - resume-net
+    restart: always
+
+volumes:
+  mysql-data:
+
+networks:
+  resume-net:
+    driver: bridge

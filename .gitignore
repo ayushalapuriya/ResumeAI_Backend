@@ -81,3 +81,6 @@ dist/
 
 # Ignore IDE-specific run configs
 *.run.xml
+
+# Docker
+DOCKER_GUIDE.md

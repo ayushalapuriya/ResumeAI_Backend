@@ -30,6 +30,9 @@ public class AuthServiceImpl implements AuthService {
     private final UserDetailsService userDetailsService;
 
     public AuthResponse register(RegisterRequest request) {
+        if (repo.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists: " + request.getEmail());
+        }
 
         User user = User.builder()
                 .fullName(request.getFullName())
@@ -246,6 +249,24 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return growthData;
+    }
+
+    @Override
+    public User createUser(Map<String, String> userData) {
+        String email = userData.get("email");
+        if (repo.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Email already exists: " + email);
+        }
+
+        User user = User.builder()
+                .fullName(userData.get("fullName"))
+                .email(email)
+                .password(encoder.encode(userData.get("password")))
+                .role(userData.getOrDefault("role", "ROLE_USER"))
+                .isActive(true)
+                .subscriptionPlan(userData.getOrDefault("subscriptionPlan", "FREE"))
+                .build();
+        return repo.save(user);
     }
 }
 
