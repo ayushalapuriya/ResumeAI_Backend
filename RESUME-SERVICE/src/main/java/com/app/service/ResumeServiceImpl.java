@@ -7,6 +7,7 @@ import com.app.mapper.ResumeMapper;
 import com.app.repository.ResumeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     private final ResumeRepository repository;
     private final ResumeMapper mapper;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public ResumeDTO createResume(ResumeDTO dto) {
@@ -88,6 +90,15 @@ public class ResumeServiceImpl implements ResumeService {
 
         resume.setPublic(true);
         repository.save(resume);
+
+        // Publish to RabbitMQ
+        java.util.Map<String, Object> notification = new java.util.HashMap<>();
+        notification.put("recipientId", resume.getUserId());
+        notification.put("title", "Resume Published");
+        notification.put("message", "Your resume '" + resume.getTitle() + "' has been published successfully.");
+        notification.put("type", "SYSTEM");
+        notification.put("channel", "IN_APP");
+        rabbitTemplate.convertAndSend("notification_exchange", "notification_routing_key", notification);
     }
 
     @Override
