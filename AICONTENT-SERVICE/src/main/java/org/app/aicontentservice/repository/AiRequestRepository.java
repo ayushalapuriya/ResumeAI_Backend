@@ -19,8 +19,11 @@ public interface AiRequestRepository extends JpaRepository<AiRequest, String> {
 
     List<AiRequest> findByStatus(String status);
 
-    @Query("SELECT COUNT(a) FROM AiRequest a WHERE a.userId = :userId AND DATE(a.createdAt) = CURRENT_DATE")
+    @Query("SELECT COUNT(a) FROM AiRequest a WHERE a.userId = :userId AND DATE(a.createdAt) = CURRENT_DATE AND a.status = 'COMPLETED'")
     int countByUserIdToday(int userId);
+
+    @Query("SELECT COUNT(a) FROM AiRequest a WHERE a.userId = :userId AND MONTH(a.createdAt) = MONTH(CURRENT_DATE) AND YEAR(a.createdAt) = YEAR(CURRENT_DATE) AND a.status = 'COMPLETED'")
+    int countByUserIdThisMonth(int userId);
 
     @Query("SELECT COALESCE(SUM(a.tokensUsed),0) FROM AiRequest a WHERE a.userId = :userId")
     int sumTokensByUserId(int userId);

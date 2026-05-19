@@ -144,7 +144,7 @@ services:
     environment:
       - DB_HOST=mysql-db
       - EUREKA_HOST=eureka-server
-      - GEMINI_API_KEY=AIzaSyAGvUbBfypereryC5IH6YRKQ9YsCU0Jvsk
+      - GEMINI_API_KEY=AIzaSyA8dtw_87xavZoNp354_Jjl_zOw47bntUA
     depends_on:
       - mysql-db
       - eureka-server

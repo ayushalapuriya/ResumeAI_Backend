@@ -74,6 +74,9 @@ public class AiServiceImpl implements AiService {
         if (repo.countByUserIdToday(userId) >= 5) {
             throw new org.app.aicontentservice.exception.QuotaExceededException("Daily AI limit of 5 requests exceeded. Upgrade to Premium for unlimited access!");
         }
+        if (repo.countByUserIdThisMonth(userId) >= 50) {
+            throw new org.app.aicontentservice.exception.QuotaExceededException("Monthly AI limit of 50 requests exceeded. Upgrade to Premium for unlimited access!");
+        }
     }
 
     // 🧠 SUMMARY
@@ -219,6 +222,22 @@ public class AiServiceImpl implements AiService {
     // 📊 QUOTA
     @Override
     public int getRemainingQuota(int userId) {
-        return 5 - repo.countByUserIdToday(userId);
+        int dailyRemaining = 5 - repo.countByUserIdToday(userId);
+        int monthlyRemaining = 50 - repo.countByUserIdThisMonth(userId);
+        return Math.max(0, Math.min(dailyRemaining, monthlyRemaining));
+    }
+
+    @Override
+    public Map<String, Object> getDetailedQuota(int userId) {
+        int dailyUsed = repo.countByUserIdToday(userId);
+        int monthlyUsed = repo.countByUserIdThisMonth(userId);
+        return Map.of(
+            "dailyUsed", dailyUsed,
+            "dailyLimit", 5,
+            "dailyRemaining", Math.max(0, 5 - dailyUsed),
+            "monthlyUsed", monthlyUsed,
+            "monthlyLimit", 50,
+            "monthlyRemaining", Math.max(0, 50 - monthlyUsed)
+        );
     }
 }

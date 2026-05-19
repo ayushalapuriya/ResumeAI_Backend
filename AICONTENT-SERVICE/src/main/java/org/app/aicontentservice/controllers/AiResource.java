@@ -39,6 +39,6 @@ public class AiResource {
 
     @GetMapping("/quota/{userId}")
     public ResponseEntity<?> quota(@PathVariable int userId) {
-        return ResponseEntity.ok(Map.of("remaining", aiService.getRemainingQuota(userId)));
+        return ResponseEntity.ok(aiService.getDetailedQuota(userId));
     }
 }

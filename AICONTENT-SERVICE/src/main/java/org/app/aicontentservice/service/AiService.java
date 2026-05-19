@@ -23,5 +23,7 @@ public interface AiService {
 
     int getRemainingQuota(int userId);
 
+    Map<String, Object> getDetailedQuota(int userId);
+
     Map<String, String> translateResume(int userId, String resume);
 }
