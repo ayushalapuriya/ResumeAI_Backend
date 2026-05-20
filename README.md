@@ -45,12 +45,15 @@ We follow a professional branching strategy to ensure code quality and safety.
 **IMPORTANT**: Sensitive data (DB passwords, API keys) must **NEVER** be pushed to Git.
 
 We use a "Local Template" pattern:
-- **`application.properties` / `.yml`**: These files contain your **REAL** local data. They are added to `.gitignore` and stay ONLY on your computer.
-- **`application-local.properties` / `.yml`**: These are **TEMPLATE** files with placeholders like `${}`. These are pushed to Git as a reference for others.
+- **`.env`**: Contains your **REAL** local values for Docker Compose and stays only on your machine.
+- **`.env.example`**: Contains safe placeholders and can be shared as a template.
 
 ### Setup for new developers:
-1. Copy the `application-local` files to `application` files.
-2. Fill in your real database credentials and API keys in the `application` files.
+1. Copy `.env.example` to `.env`.
+2. Fill in your real database credentials and API keys in `.env`.
+3. Run `docker compose up -d` from the `ResumeAI` folder.
+
+> `docker-compose.yml` is still needed here because it defines the full local stack and reads values from `.env`.
 
 ---
 
